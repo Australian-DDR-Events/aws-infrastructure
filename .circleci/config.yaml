@@ -1,0 +1,59 @@
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@1.3.2
+
+jobs:
+  install:
+    working_directory: ~/aws-infrastructure
+    docker:
+      - image: cimg/base:2020.01
+    resource_class: small
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/aws-infrastructure
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_REGION
+      - persist_to_workspace:
+          root: ~/aws-infrastructure
+          paths: .
+
+  deploy:
+    working_directory: ~/aws-infrastructure
+    docker:
+      - image: cimg/base:2020.01
+    resource_class: small
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/aws-infrastructure
+      - run:
+          name: Deploy CloudFormation template
+          command: |
+            aws cloudformation deploy \
+              --template-file "stacks/base.yaml" \
+              --stack-name "AUS-DDR-BASE-STACK" \
+              --parameter-overrides \
+                "DBInstanceID=ausddrdb" \
+                "DBUsername=${AWS_DB_USERNAME}" \
+                "DBPassword=${AWS_DB_PASSWORD}" \
+              --no-fail-on-empty-changeset
+
+workflows:
+  deploy_base_infrastructure:
+    jobs:
+      - deploy_infrastructure:
+          type: approval
+      - install:
+          context:
+            - production
+          requires:
+            - deploy_aws
+      - run_cloudformation:
+          context:
+            - production
+          requires:
+            - install
+
