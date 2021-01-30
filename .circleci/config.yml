@@ -50,8 +50,8 @@ workflows:
           context:
             - production
           requires:
-            - deploy_aws
-      - run_cloudformation:
+            - deploy_infrastructure
+      - deploy:
           context:
             - production
           requires:
