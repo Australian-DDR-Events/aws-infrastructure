@@ -33,7 +33,7 @@ jobs:
           name: Deploy CloudFormation template
           command: |
             aws cloudformation deploy \
-              --template-file "stacks/base.yaml" \
+              --template-file "stacks/base.yml" \
               --stack-name "AUS-DDR-BASE-STACK" \
               --parameter-overrides \
                 "DBInstanceID=ausddrdb" \
