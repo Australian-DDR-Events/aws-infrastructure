@@ -44,15 +44,15 @@ Resources:
     Properties:
       Description: Policy to allow user to modify buckets in this stack
       PolicyDocument:
-        Effect: 'Allow',
+        Effect: 'Allow'
         Action:
-          - 's3:PutObject',
-          - 's3:GetObject',
-          - 's3:ListBucketMultipartUploads',
-          - 's3:ListBucket',
+          - 's3:PutObject'
+          - 's3:GetObject'
+          - 's3:ListBucketMultipartUploads'
+          - 's3:ListBucket'
           - 's3:GetObjectVersion'
         Resource:
-          - "arn:aws:s3:::*/*",
+          - "arn:aws:s3:::*/*"
           - Fn::GetAtt: AusDdrAssetsBucket.Arn
       Users:
         - !Ref S3IAMUser
