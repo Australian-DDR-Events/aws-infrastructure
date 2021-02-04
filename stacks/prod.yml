@@ -6,6 +6,7 @@ Resources:
   AusDdrAssetsBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
+      AccessControl: PublicRead
       BucketName: aus-ddr-events-bucket-prod
       CorsConfiguration:
         CorsRules:
@@ -29,4 +30,10 @@ Outputs:
         Fn::GetAtt: AusDdrAssetsBucket.WebsiteURL
       Export:
         Name: AusDdrAssetsBucketAddr
-
+    httpsWebsiteUrl:
+      Value: !Join
+        - ''
+        - - 'https://'
+          - Fn::GetAtt: AusDdrAssetsBucket.DomainName
+      Export:
+        Name: HttpsAusDdrAssetsBucketAddr
