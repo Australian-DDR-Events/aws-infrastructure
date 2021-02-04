@@ -43,16 +43,18 @@ Resources:
     Type: 'AWS::IAM::Policy'
     Properties:
       PolicyDocument:
-        Effect: 'Allow'
-        Action:
-          - 's3:PutObject'
-          - 's3:GetObject'
-          - 's3:ListBucketMultipartUploads'
-          - 's3:ListBucket'
-          - 's3:GetObjectVersion'
-        Resource:
-          - "arn:aws:s3:::*/*"
-          - Fn::GetAtt: AusDdrAssetsBucket.Arn
+        Version: 2012-10-17
+        Statement:
+        - Effect: 'Allow'
+          Action:
+            - 's3:PutObject'
+            - 's3:GetObject'
+            - 's3:ListBucketMultipartUploads'
+            - 's3:ListBucket'
+            - 's3:GetObjectVersion'
+          Resource:
+            - 'arn:aws:s3:::*/*'
+            - Fn::GetAtt: AusDdrAssetsBucket.Arn
       PolicyName: S3ReadWrite
       Users:
         - !Ref S3IAMUser
