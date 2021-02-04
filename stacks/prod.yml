@@ -72,9 +72,6 @@ Resources:
   S3IAMUser:
     Type: 'AWS::IAM::User'
     Properties:
-      LoginProfile:
-        Password: !Ref S3IAMPassword
-        PasswordResetRequired: false
       UserName: !Ref S3IAMUsername
     DependsOn:
       - AusDdrAssetsBucket
