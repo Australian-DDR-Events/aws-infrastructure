@@ -33,6 +33,7 @@ jobs:
             aws cloudformation deploy \
               --template-file "stacks/prod.yml" \
               --stack-name "AUS-DDR-PROD-STACK" \
+              --capabilities CAPABILITY_NAMED_IAM \
               --parameter-overrides \
                 "S3IAMUsername=${S3_IAM_USERNAME}" \
                 "S3IAMPassword=${S3_IAM_PASSWORD}" \
