@@ -42,7 +42,6 @@ Resources:
   S3IAMPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
-      Description: Policy to allow user to modify buckets in this stack
       PolicyDocument:
         Effect: 'Allow'
         Action:
