@@ -18,11 +18,6 @@ Resources:
               - http://localhost:1234/
             Id: public-visibility-cors-rule
             MaxAge: 3600
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: false
 
 Outputs:
     websiteUrl:
