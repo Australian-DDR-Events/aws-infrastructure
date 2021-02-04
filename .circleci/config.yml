@@ -33,6 +33,9 @@ jobs:
             aws cloudformation deploy \
               --template-file "stacks/prod.yml" \
               --stack-name "AUS-DDR-PROD-STACK" \
+              --parameter-overrides \
+                "S3IAMUsername=${S3_IAM_USERNAME}" \
+                "S3IAMPassword=${S3_IAM_PASSWORD}" \
               --no-fail-on-empty-changeset
 
 workflows:

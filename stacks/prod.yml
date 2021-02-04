@@ -2,6 +2,26 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Description: Production infrastructure used by AUS-DDR-Events
 
+Parameters:
+  S3IAMUsername:
+    Description: Username for S3 IAM User
+    NoEcho: true
+    Type: String
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: '[a-zA-Z0-9]+'
+    ConstraintDescription: >-
+      Must be 1-64 characters and match [a-zA-Z0-9]+
+  S3IAMPassword:
+    Description: Password for S3 IAM User
+    NoEcho: true
+    Type: String
+    MinLength: '32'
+    MaxLength: '64'
+    AllowedPattern: '[a-zA-Z0-9]+'
+    ConstraintDescription: >-
+      Must be 32-64 characters and match [a-zA-Z0-9]+
+
 Resources:
   AusDdrAssetsBucket:
     Type: 'AWS::S3::Bucket'
@@ -18,6 +38,37 @@ Resources:
               - http://localhost:1234/
             Id: public-visibility-cors-rule
             MaxAge: 3600
+
+  S3IAMPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      Description: Policy to allow user to modify buckets in this stack
+      PolicyDocument:
+        Effect: 'Allow',
+        Action:
+          - 's3:PutObject',
+          - 's3:GetObject',
+          - 's3:ListBucketMultipartUploads',
+          - 's3:ListBucket',
+          - 's3:GetObjectVersion'
+        Resource:
+          - "arn:aws:s3:::*/*",
+          - Fn::GetAtt: AusDdrAssetsBucket.Arn
+      Users:
+        - !Ref S3IAMUser
+    DependsOn:
+      - S3IAMUser
+
+
+  S3IAMUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      LoginProfile:
+        Password: !Ref S3IAMPassword
+        PasswordResetRequired: false
+    Username: !Ref S3IAMUsername
+    DependsOn:
+      - AusDdrAssetsBucket
 
 Outputs:
     websiteUrl:
