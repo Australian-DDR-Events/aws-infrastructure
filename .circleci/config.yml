@@ -27,6 +27,13 @@ jobs:
                 "DBUsername=${AWS_DB_USERNAME}" \
                 "DBPassword=${AWS_DB_PASSWORD}" \
               --no-fail-on-empty-changeset
+      - run:
+          name: Deploy Prod CloudFormation template
+          command: |
+            aws cloudformation deploy \
+              --template-file "stacks/prod.yml" \
+              --stack-name "AUS-DDR-PROD-STACK" \
+              --no-fail-on-empty-changeset
 
 workflows:
   deploy_base_infrastructure:
