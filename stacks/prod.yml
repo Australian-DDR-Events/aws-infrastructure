@@ -66,7 +66,7 @@ Resources:
       LoginProfile:
         Password: !Ref S3IAMPassword
         PasswordResetRequired: false
-    Username: !Ref S3IAMUsername
+    UserName: !Ref S3IAMUsername
     DependsOn:
       - AusDdrAssetsBucket
 
