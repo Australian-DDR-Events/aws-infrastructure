@@ -5,9 +5,9 @@ orbs:
 jobs:
   deploy:
     working_directory: ~/aws-infrastructure
-    docker:
-      - image: cimg/base:2020.01
-    resource_class: small
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: medium
     steps:
       - checkout
       - attach_workspace:
