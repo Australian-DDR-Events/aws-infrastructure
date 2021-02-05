@@ -45,13 +45,13 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-        - Sid: Allow viewing of bucket
+        - Sid: AllowViewingOfBucket
           Effect: 'Allow'
           Action:
             - 's3:ListBucket'
           Resource:
             - Fn::GetAtt: AusDdrAssetsBucket.Arn
-        - Sid: Enable bucket actions
+        - Sid: EnableBucketActions
           Effect: 'Allow'
           Action:
             - 's3:PutObject'
