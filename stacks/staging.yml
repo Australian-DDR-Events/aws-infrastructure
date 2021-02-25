@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Production infrastructure used by AUS-DDR-Events
+Description: Staging infrastructure used by AUS-DDR-Events
 
 Parameters:
   S3IAMUsername:
@@ -18,7 +18,7 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       AccessControl: PublicRead
-      BucketName: aus-ddr-events-bucket-prod
+      BucketName: aus-ddr-events-bucket-staging
       CorsConfiguration:
         CorsRules:
           - AllowedMethods:
