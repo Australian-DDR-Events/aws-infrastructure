@@ -72,11 +72,11 @@ Outputs:
       Value:
         Fn::GetAtt: AusDdrAssetsBucket.WebsiteURL
       Export:
-        Name: AusDdrAssetsBucketAddr
+        Name: AusDdrAssetsBucketAddrStaging
     httpsWebsiteUrl:
       Value: !Join
         - ''
         - - 'https://'
           - Fn::GetAtt: AusDdrAssetsBucket.DomainName
       Export:
-        Name: HttpsAusDdrAssetsBucketAddr
+        Name: HttpsAusDdrAssetsBucketAddrStaging

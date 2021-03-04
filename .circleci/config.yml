@@ -41,10 +41,10 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION
       - run:
-          name: Deploy Prod CloudFormation template
+          name: Deploy CloudFormation template
           command: |
             aws cloudformation deploy \
-              --template-file "stacks/prod.yml" \
+              --template-file "stacks/${ENVIRONMENT}.yml" \
               --stack-name "AUS-DDR-${AWS_ENVIRONMENT}-STACK" \
               --capabilities CAPABILITY_NAMED_IAM \
               --parameter-overrides \
