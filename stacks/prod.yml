@@ -67,6 +67,32 @@ Resources:
     DependsOn:
       - AusDdrAssetsBucket
 
+
+  ECRRepository:
+    Type: 'AWS::ECR::Repository'
+    Properties:
+      RepositoryName: !Ref AWS::StackName
+      RepositoryPolicyText:
+        Version: '2008-10-17'
+        Statement:
+          Sid: ECRRepoPushPull
+          Effect: Allow
+          Principal:
+            AWS: !GetAtt ECRManagementUser.Arn
+          Action:
+            - ecr:GetDownloadUrlForLayer
+            - ecr:BatchGetImage
+            - ecr:BatchCheckLayerAvailability
+            - ecr:PutImage
+            - ecr:InitiateLayerUpload
+            - ecr:UploadLayerPart
+            - ecr:CompleteLayerUpload
+    DependsOn:
+      - ECRManagementUser
+
+  ECRManagementUser:
+    Type: 'AWS::IAM::User'
+
 Outputs:
     websiteUrl:
       Value:
