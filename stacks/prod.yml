@@ -105,3 +105,10 @@ Outputs:
           - Fn::GetAtt: AusDdrAssetsBucket.DomainName
       Export:
         Name: HttpsAusDdrAssetsBucketAddr
+    ecrName:
+      Value: !Ref EcrRepository
+      Export:
+        Name: !Join
+          - '-'
+          - - 'AWS::StackName'
+            - 'ecr-repository'
