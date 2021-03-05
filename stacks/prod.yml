@@ -106,10 +106,9 @@ Outputs:
     Export:
       Name: HttpsAusDdrAssetsBucketAddr
   ecrName:
-    Value:
-      Ref: EcrRepository
+    Value: !Ref ECRRepository
     Export:
       Name: !Join
         - '-'
-        - - 'AWS::StackName'
+        - - !Ref 'AWS::StackName'
           - 'ecr-repository'
