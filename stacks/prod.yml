@@ -67,6 +67,49 @@ Resources:
     DependsOn:
       - AusDdrAssetsBucket
 
+
+  ecsRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+        - PolicyName: ecsManagementPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Resource: !GetAtt ecsIAMUser.Arn
+                Action: 
+                  - ec2:DescribeTags
+                  - ecs:CreateCluster
+                  - ecs:DeregisterContainerInstance
+                  - ecs:DiscoverPollEndpoint
+                  - ecs:Poll
+                  - ecs:RegisterContainerInstance
+                  - ecs:StartTelemetrySession
+                  - ecs:UpdateContainerInstancesState
+                  - ecs:Submit*
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:BatchGetImage
+                  - logs:CreateLogStream
+                  - logs:PutLogEvent
+    DependsOn:
+      - ecsIAMUser
+
+
+  ecsIAMUser:
+    Type: 'AWS::IAM::User'
+
 Outputs:
     websiteUrl:
       Value:
