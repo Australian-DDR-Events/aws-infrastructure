@@ -63,15 +63,48 @@ Resources:
       Engine: postgres
       EngineVersion: 12.5
 
+
+
+  ECRRepository:
+    Type: 'AWS::ECR::Repository'
+    Properties:
+      RepositoryPolicyText:
+        Version: '2008-10-17'
+        Statement:
+          Sid: ECRRepoPushPull
+          Effect: Allow
+          Principal:
+            AWS: !GetAtt ECRManagementUser.Arn
+          Action:
+            - ecr:GetDownloadUrlForLayer
+            - ecr:BatchGetImage
+            - ecr:BatchCheckLayerAvailability
+            - ecr:PutImage
+            - ecr:InitiateLayerUpload
+            - ecr:UploadLayerPart
+            - ecr:CompleteLayerUpload
+    DependsOn:
+      - ECRManagementUser
+
+  ECRManagementUser:
+    Type: 'AWS::IAM::User'
+
 Outputs:
-    dbAddr:
-      Value:
-        Fn::GetAtt: AusDdrDB.Endpoint.Address
-      Export:
-        Name: AusDdrDbAddr
-    dbPort:
-      Value:
-        Fn::GetAtt: AusDdrDB.Endpoint.Port
-      Export:
-        Name: AusDdrDbPort
+  dbAddr:
+    Value:
+      Fn::GetAtt: AusDdrDB.Endpoint.Address
+    Export:
+      Name: AusDdrDbAddr
+  dbPort:
+    Value:
+      Fn::GetAtt: AusDdrDB.Endpoint.Port
+    Export:
+      Name: AusDdrDbPort
+  ecrName:
+    Value: !Ref ECRRepository
+    Export:
+      Name: !Join
+        - '-'
+        - - !Ref 'AWS::StackName'
+          - 'ecr-repository'
 
