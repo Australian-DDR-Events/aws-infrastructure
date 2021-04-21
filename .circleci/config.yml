@@ -22,6 +22,7 @@ jobs:
             aws cloudformation deploy \
               --template-file "stacks/base.yml" \
               --stack-name "AUS-DDR-BASE-STACK" \
+              --capabilities CAPABILITY_IAM \
               --parameter-overrides \
                 "DBInstanceID=ausddrdb" \
                 "DBUsername=${AWS_DB_USERNAME}" \
