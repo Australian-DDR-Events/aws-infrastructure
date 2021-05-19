@@ -132,7 +132,7 @@ Resources:
       SubnetId: !Ref PubSubnetAz2
       RouteTableId: !Ref RouteViaIgw
 
-  EcsIamRole2:
+  EcsIamRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -151,7 +151,7 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
-        - !Ref EcsIamRole2
+        - !Ref EcsIamRole
 
 
   EcsSecurityGroup:
