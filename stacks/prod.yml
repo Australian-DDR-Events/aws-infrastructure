@@ -12,6 +12,18 @@ Parameters:
     AllowedPattern: '[a-zA-Z0-9]+'
     ConstraintDescription: >-
       Must be 1-64 characters and match [a-zA-Z0-9]+
+# EcsAmiIds can be found here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
+  EcsAmiId:
+    Type: String
+    Description: Specifies the AMI ID for your container instances.
+    Default: ami-03f9a9874affbb05b
+  EcsInstanceType:
+    Type: CommaDelimitedList
+    Description: >
+      Specifies the EC2 instance type for your container instances.
+      Defaults to t4g.nano
+    Default: t4g.nano
+    ConstraintDescription: must be a valid EC2 instance type.
 
 Resources:
   AusDdrAssetsBucket:
@@ -67,6 +79,131 @@ Resources:
     DependsOn:
       - AusDdrAssetsBucket
 
+# VPC for ECS
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+
+  PubSubnetAz1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: ap-southeast-2a,ap-southeast-2b,ap-southeast-2c
+      MapPublicIpOnLaunch: true
+  PubSubnetAz2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: ap-southeast-2a,ap-southeast-2b,ap-southeast-2c
+      MapPublicIpOnLaunch: true
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
+
+  RouteViaIgw:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+  PublicRouteViaIgw:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref RouteViaIgw
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PubSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PubSubnetAz1
+      RouteTableId: !Ref RouteViaIgw
+  PubSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PubSubnetAz2
+      RouteTableId: !Ref RouteViaIgw
+
+  EcsIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+
+
+  EcsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ECS Allowed Ports
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: ::/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: ::/0
+  EcsInstanceLc:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Condition: CreateWithASG
+    Properties:
+      ImageId: !Ref EcsAmiId
+      InstanceType: !Select [ 0, !Ref EcsInstanceType ]
+      AssociatePublicIpAddress: !Ref "AWS::NoValue"
+      IamInstanceProfile: !Ref EcsIamRole
+      KeyName: !Ref "AWS::NoValue"
+      SecurityGroups: !Ref EcsSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvdcz
+          Ebs:
+            VolumeSize: 22
+            VolumeType: gp2
+  EcsInstanceAsg:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Condition: CreateWithASG
+    Properties:
+      VPCZoneIdentifier: !Sub "${PubSubnetAz1}"
+      LaunchConfigurationName: !Ref EcsInstanceLc
+      MinSize: '0'
+      MaxSize: 1
+      DesiredCapacity: 1
+      Tags:
+        -
+          Key: Name
+          Value: !Sub "ECS Instance - ${AWS::StackName}"
+          PropagateAtLaunch: true
+        -
+          Key: Description
+          Value: "This instance is the part of the Auto Scaling group which was created through ECS Console"
+          PropagateAtLaunch: true
+
 
 Outputs:
   websiteUrl:
@@ -81,3 +218,7 @@ Outputs:
         - Fn::GetAtt: AusDdrAssetsBucket.DomainName
     Export:
       Name: HttpsAusDdrAssetsBucketAddr
+  EcsInstanceAsgName:
+    Condition: CreateWithASG
+    Description: Auto Scaling Group Name for ECS Instances
+    Value: !Ref EcsInstanceAsg
