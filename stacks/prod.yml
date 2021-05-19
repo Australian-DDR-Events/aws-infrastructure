@@ -217,6 +217,5 @@ Outputs:
     Export:
       Name: HttpsAusDdrAssetsBucketAddr
   EcsInstanceAsgName:
-    Condition: CreateWithASG
     Description: Auto Scaling Group Name for ECS Instances
     Value: !Ref EcsInstanceAsg
