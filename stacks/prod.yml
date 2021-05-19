@@ -179,7 +179,7 @@ Resources:
   EcsInstanceLc:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      ImageId: !Ref EcsAmiId
+      ImageId: ami-08d31403aa8e81bb8
       InstanceType: !Select [ 0, !Ref EcsInstanceType ]
       AssociatePublicIpAddress: !Ref "AWS::NoValue"
       IamInstanceProfile: !Ref EscIamInstanceProfile
