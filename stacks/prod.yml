@@ -172,7 +172,6 @@ Resources:
           CidrIp: ::/0
   EcsInstanceLc:
     Type: AWS::AutoScaling::LaunchConfiguration
-    Condition: CreateWithASG
     Properties:
       ImageId: !Ref EcsAmiId
       InstanceType: !Select [ 0, !Ref EcsInstanceType ]
@@ -187,7 +186,6 @@ Resources:
             VolumeType: gp2
   EcsInstanceAsg:
     Type: AWS::AutoScaling::AutoScalingGroup
-    Condition: CreateWithASG
     Properties:
       VPCZoneIdentifier: !Sub "${PubSubnetAz1}"
       LaunchConfigurationName: !Ref EcsInstanceLc
