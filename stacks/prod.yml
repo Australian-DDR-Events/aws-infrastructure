@@ -147,6 +147,12 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
 
+  EscIamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EcsIamRole
+
 
   EcsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -176,7 +182,7 @@ Resources:
       ImageId: !Ref EcsAmiId
       InstanceType: !Select [ 0, !Ref EcsInstanceType ]
       AssociatePublicIpAddress: !Ref "AWS::NoValue"
-      IamInstanceProfile: !Ref EcsIamRole
+      IamInstanceProfile: !Ref EscIamInstanceProfile
       KeyName: !Ref "AWS::NoValue"
       SecurityGroups:
         - !Ref EcsSecurityGroup
@@ -202,6 +208,9 @@ Resources:
           Key: Description
           Value: "This instance is the part of the Auto Scaling group which was created through ECS Console"
           PropagateAtLaunch: true
+
+  EcsCluster:
+    Type: AWS::ECS::Cluster
 
 
 Outputs:
