@@ -230,7 +230,7 @@ Resources:
         - !Ref EcsClusterCapacityProvider
       DefaultCapacityProviderStrategy:
         - Base: 0
-          Weight: 0
+          Weight: 1
           CapacityProvider: !Ref EcsClusterCapacityProvider
 
 
