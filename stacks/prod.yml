@@ -194,7 +194,8 @@ Resources:
   EcsInstanceAsg:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      VPCZoneIdentifier: !Sub "${PubSubnetAz1}"
+      VPCZoneIdentifier:
+        - !Sub "${PubSubnetAz1}"
       LaunchConfigurationName: !Ref EcsInstanceLc
       MinSize: '0'
       MaxSize: 1
