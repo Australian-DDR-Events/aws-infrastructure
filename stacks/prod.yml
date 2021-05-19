@@ -225,7 +225,7 @@ Resources:
   EcsClusterCPAssociations:
     Type: AWS::ECS::ClusterCapacityProviderAssociations
     Properties:
-      Cluster: !Ref EcsClusterCapacityProvider
+      Cluster: !Ref EcsCluster
       CapacityProviders:
         - !Ref EcsClusterCapacityProvider
       DefaultCapacityProviderStrategy:
