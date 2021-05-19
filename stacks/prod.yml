@@ -178,7 +178,8 @@ Resources:
       AssociatePublicIpAddress: !Ref "AWS::NoValue"
       IamInstanceProfile: !Ref EcsIamRole
       KeyName: !Ref "AWS::NoValue"
-      SecurityGroups: !Ref EcsSecurityGroup
+      SecurityGroups:
+        - !Ref EcsSecurityGroup
       BlockDeviceMappings:
         - DeviceName: /dev/xvdcz
           Ebs:
