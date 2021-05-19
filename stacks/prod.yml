@@ -189,7 +189,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
-            VolumeSize: 22
+            VolumeSize: 30
             VolumeType: gp2
   EcsInstanceAsg:
     Type: AWS::AutoScaling::AutoScalingGroup
