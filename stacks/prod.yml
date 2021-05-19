@@ -234,6 +234,22 @@ Resources:
           CapacityProvider: !Ref EcsClusterCapacityProvider
 
 
+  EcsTaskExecutionIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+
 Outputs:
   websiteUrl:
     Value:
@@ -250,3 +266,6 @@ Outputs:
   EcsInstanceAsgName:
     Description: Auto Scaling Group Name for ECS Instances
     Value: !Ref EcsInstanceAsg
+  EcsTaskExecutionIamRoleArn:
+    Description: ARN for ecs task execution role to access ecr
+    Value: !Ref EcsTaskExecutionIamRole
