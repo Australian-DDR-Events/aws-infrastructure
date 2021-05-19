@@ -16,7 +16,7 @@ Parameters:
   EcsAmiId:
     Type: String
     Description: Specifies the AMI ID for your container instances.
-    Default: ami-03f9a9874affbb05b
+    Default: ami-08d31403aa8e81bb8
   EcsInstanceType:
     Type: CommaDelimitedList
     Description: >
@@ -187,7 +187,7 @@ Resources:
       SecurityGroups:
         - !Ref EcsSecurityGroup
       BlockDeviceMappings:
-        - DeviceName: /dev/xvdcz
+        - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: 22
             VolumeType: gp2
