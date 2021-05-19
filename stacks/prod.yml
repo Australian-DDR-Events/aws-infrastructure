@@ -210,8 +210,28 @@ Resources:
           Value: "This instance is the part of the Auto Scaling group which was created through ECS Console"
           PropagateAtLaunch: true
 
+  EcsClusterCapacityProvider:
+    Type: AWS::ECS::CapacityProvider
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref EcsInstanceAsg
+        ManagedScaling:
+          Status: ENABLED
+        ManagedTerminationProtection: DISABLED
+
   EcsCluster:
     Type: AWS::ECS::Cluster
+
+  EcsClusterCPAssociations:
+    Type: AWS::ECS::ClusterCapacityProviderAssociations
+    Properties:
+      Cluster: !Ref EcsClusterCapacityProvider
+      CapacityProviders:
+        - !Ref EcsClusterCapacityProvider
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          Weight: 0
+          CapacityProvider: !Ref EcsClusterCapacityProvider
 
 
 Outputs:
