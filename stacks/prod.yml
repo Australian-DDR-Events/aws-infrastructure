@@ -196,6 +196,7 @@ Resources:
     Properties:
       VPCZoneIdentifier:
         - !Sub "${PubSubnetAz1}"
+        - !Sub "${PubSubnetAz2}"
       LaunchConfigurationName: !Ref EcsInstanceLc
       MinSize: 0
       MaxSize: 1
