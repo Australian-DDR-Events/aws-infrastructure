@@ -154,85 +154,85 @@ Resources:
         - !Ref EcsIamRole
 
 
-  EcsSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: ECS Allowed Ports
-      VpcId: !Ref Vpc
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIpv6: ::/0
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIpv6: ::/0
-  EcsInstanceLc:
-    Type: AWS::AutoScaling::LaunchConfiguration
-    Properties:
-      ImageId: !Ref EcsAmiId
-      InstanceType: !Select [ 0, !Ref EcsInstanceType ]
-      AssociatePublicIpAddress: !Ref "AWS::NoValue"
-      IamInstanceProfile: !Ref EscIamInstanceProfile
-      KeyName: !Ref "AWS::NoValue"
-      SecurityGroups:
-        - !Ref EcsSecurityGroup
-      BlockDeviceMappings:
-        - DeviceName: /dev/xvda
-          Ebs:
-            VolumeSize: 30
-            VolumeType: gp2
-  EcsInstanceAsg:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    Properties:
-      VPCZoneIdentifier:
-        - !Sub "${PubSubnetAz1}"
-        - !Sub "${PubSubnetAz2}"
-      LaunchConfigurationName: !Ref EcsInstanceLc
-      MinSize: 0
-      MaxSize: 1
-      DesiredCapacity: 1
-      Tags:
-        -
-          Key: Name
-          Value: !Sub "ECS Instance - ${AWS::StackName}"
-          PropagateAtLaunch: true
-        -
-          Key: Description
-          Value: "This instance is the part of the Auto Scaling group which was created through ECS Console"
-          PropagateAtLaunch: true
+  # EcsSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupDescription: ECS Allowed Ports
+  #     VpcId: !Ref Vpc
+  #     SecurityGroupIngress:
+  #       - IpProtocol: tcp
+  #         FromPort: 80
+  #         ToPort: 80
+  #         CidrIp: 0.0.0.0/0
+  #       - IpProtocol: tcp
+  #         FromPort: 80
+  #         ToPort: 80
+  #         CidrIpv6: ::/0
+  #       - IpProtocol: tcp
+  #         FromPort: 443
+  #         ToPort: 443
+  #         CidrIp: 0.0.0.0/0
+  #       - IpProtocol: tcp
+  #         FromPort: 443
+  #         ToPort: 443
+  #         CidrIpv6: ::/0
+  # EcsInstanceLc:
+  #   Type: AWS::AutoScaling::LaunchConfiguration
+  #   Properties:
+  #     ImageId: !Ref EcsAmiId
+  #     InstanceType: !Select [ 0, !Ref EcsInstanceType ]
+  #     AssociatePublicIpAddress: !Ref "AWS::NoValue"
+  #     IamInstanceProfile: !Ref EscIamInstanceProfile
+  #     KeyName: !Ref "AWS::NoValue"
+  #     SecurityGroups:
+  #       - !Ref EcsSecurityGroup
+  #     BlockDeviceMappings:
+  #       - DeviceName: /dev/xvda
+  #         Ebs:
+  #           VolumeSize: 30
+  #           VolumeType: gp2
+  # EcsInstanceAsg:
+  #   Type: AWS::AutoScaling::AutoScalingGroup
+  #   Properties:
+  #     VPCZoneIdentifier:
+  #       - !Sub "${PubSubnetAz1}"
+  #       - !Sub "${PubSubnetAz2}"
+  #     LaunchConfigurationName: !Ref EcsInstanceLc
+  #     MinSize: 0
+  #     MaxSize: 1
+  #     DesiredCapacity: 1
+  #     Tags:
+  #       -
+  #         Key: Name
+  #         Value: !Sub "ECS Instance - ${AWS::StackName}"
+  #         PropagateAtLaunch: true
+  #       -
+  #         Key: Description
+  #         Value: "This instance is the part of the Auto Scaling group which was created through ECS Console"
+  #         PropagateAtLaunch: true
 
-  EcsClusterCapacityProvider:
-    Type: AWS::ECS::CapacityProvider
-    Properties:
-      AutoScalingGroupProvider:
-        AutoScalingGroupArn: !Ref EcsInstanceAsg
-        ManagedScaling:
-          Status: ENABLED
-        ManagedTerminationProtection: DISABLED
+  # EcsClusterCapacityProvider:
+  #   Type: AWS::ECS::CapacityProvider
+  #   Properties:
+  #     AutoScalingGroupProvider:
+  #       AutoScalingGroupArn: !Ref EcsInstanceAsg
+  #       ManagedScaling:
+  #         Status: ENABLED
+  #       ManagedTerminationProtection: DISABLED
 
-  EcsCluster:
-    Type: AWS::ECS::Cluster
+  # EcsCluster:
+  #   Type: AWS::ECS::Cluster
 
-  EcsClusterCPAssociations:
-    Type: AWS::ECS::ClusterCapacityProviderAssociations
-    Properties:
-      Cluster: !Ref EcsCluster
-      CapacityProviders:
-        - !Ref EcsClusterCapacityProvider
-      DefaultCapacityProviderStrategy:
-        - Base: 0
-          Weight: 1
-          CapacityProvider: !Ref EcsClusterCapacityProvider
+  # EcsClusterCPAssociations:
+  #   Type: AWS::ECS::ClusterCapacityProviderAssociations
+  #   Properties:
+  #     Cluster: !Ref EcsCluster
+  #     CapacityProviders:
+  #       - !Ref EcsClusterCapacityProvider
+  #     DefaultCapacityProviderStrategy:
+  #       - Base: 0
+  #         Weight: 1
+  #         CapacityProvider: !Ref EcsClusterCapacityProvider
 
 
   EcsTaskExecutionIamRole:
