@@ -264,9 +264,9 @@ Outputs:
         - Fn::GetAtt: AusDdrAssetsBucket.DomainName
     Export:
       Name: HttpsAusDdrAssetsBucketAddr
-  EcsInstanceAsgName:
-    Description: Auto Scaling Group Name for ECS Instances
-    Value: !Ref EcsInstanceAsg
-  EcsTaskExecutionIamRoleArn:
-    Description: ARN for ecs task execution role to access ecr
-    Value: !Ref EcsTaskExecutionIamRole
+  # EcsInstanceAsgName:
+  #   Description: Auto Scaling Group Name for ECS Instances
+  #   Value: !Ref EcsInstanceAsg
+  # EcsTaskExecutionIamRoleArn:
+  #   Description: ARN for ecs task execution role to access ecr
+  #   Value: !Ref EcsTaskExecutionIamRole
